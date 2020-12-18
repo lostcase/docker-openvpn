@@ -1,5 +1,5 @@
 # OpenVPN for Docker
-
+Cloned for personal testing
 
 #### Upstream Links
 
@@ -21,20 +21,20 @@
   private key used by the newly generated certificate authority.
 
       docker volume create --name $OVPN_DATA
-      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM
-      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm -it kylemanna/openvpn ovpn_initpki
+      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm lostcase/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM
+      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm -it lostcase/openvpn ovpn_initpki
 
 * Start OpenVPN server process
 
-      docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn
+      docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN lostcase/openvpn
 
 * Generate a client certificate without a passphrase
 
-      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
+      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm -it lostcase/openvpn easyrsa build-client-full CLIENTNAME nopass
 
 * Retrieve the client configuration with embedded certificates
 
-      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
+      docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm lostcase/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
 
 ## Next Steps
 
@@ -59,7 +59,7 @@ If you prefer to use `docker-compose` please refer to the [documentation](docs/d
 
 * Create an environment variable with the name DEBUG and value of 1 to enable debug output (using "docker -e").
 
-        docker run -v $OVPN_DATA:/etc/openvpn -p 1194:1194/udp --cap-add=NET_ADMIN -e DEBUG=1 kylemanna/openvpn
+        docker run -v $OVPN_DATA:/etc/openvpn -p 1194:1194/udp --cap-add=NET_ADMIN -e DEBUG=1 lostcase/openvpn
 
 * Test using a client that has openvpn installed correctly
 
@@ -77,7 +77,7 @@ If you prefer to use `docker-compose` please refer to the [documentation](docs/d
 
 ## How Does It Work?
 
-Initialize the volume container using the `kylemanna/openvpn` image with the
+Initialize the volume container using the `lostcase/openvpn` image with the
 included scripts to automatically generate:
 
 - Diffie-Hellman parameters
@@ -93,11 +93,11 @@ declares that directory as a volume. It means that you can start another
 container with the `-v` argument, and access the configuration.
 The volume also holds the PKI keys and certs so that it could be backed up.
 
-To generate a client certificate, `kylemanna/openvpn` uses EasyRSA via the
+To generate a client certificate, `lostcase/openvpn` uses EasyRSA via the
 `easyrsa` command in the container's path.  The `EASYRSA_*` environmental
 variables place the PKI CA under `/etc/openvpn/pki`.
 
-Conveniently, `kylemanna/openvpn` comes with a script called `ovpn_getclient`,
+Conveniently, `lostcase/openvpn` comes with a script called `ovpn_getclient`,
 which dumps an inline OpenVPN client configuration file.  This single file can
 then be given to a client for access to the VPN.
 
@@ -163,7 +163,7 @@ OpenVPN with latest OpenSSL on Ubuntu 12.04 LTS).
 ### It Doesn't Stomp All Over the Server's Filesystem
 
 Everything for the Docker container is contained in two images: the ephemeral
-run time image (kylemanna/openvpn) and the `$OVPN_DATA` data volume. To remove
+run time image (lostcase/openvpn) and the `$OVPN_DATA` data volume. To remove
 it, remove the corresponding containers, `$OVPN_DATA` data volume and Docker
 image and it's completely removed.  This also makes it easier to run multiple
 servers since each lives in the bubble of the container (of course multiple IPs
@@ -195,6 +195,6 @@ of a guarantee in the future.
   * OS X Mavericks with Tunnelblick 3.4beta26 (build 3828) using openvpn-2.3.4
   * ArchLinux OpenVPN pkg 2.3.4-1
 
+## Credit
 
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkylemanna%2Fdocker-openvpn.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkylemanna%2Fdocker-openvpn?ref=badge_large)
+Kyle Manna: https://github.com/kylemanna
